@@ -1,71 +1,114 @@
 <html>
     <head>
-        <title>CHIPC control panel</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="vgui.css">
-        <script src="bundle.js"></script>
+        <title>Cathook Control Panel</title>
+        <link rel="stylesheet" href="design/bootstrap.css">
+        <script src="design/cathook.js"></script>
+        <link rel="icon" href="images/favicon.ico">
+        <script src="design/boot.js"></script>
+
+        <!-- Navbar Control Center -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid container">
+                <a class="navbar-brand" href="#">Cathook Control</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor02">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item" style="cursor: pointer;">
+                            <a class="nav-link" href="#controls" data-bs-toggle="modal" data-bs-target="#controls">Control Panel</a>
+                        </li>
+                        <li class="nav-item" style="cursor: pointer;">
+                            <a class="nav-link"><img src="images/discord.png" style="width: 1.5rem;" ></a>
+                        </li>
+                        <li class="nav-item" style="cursor: pointer;">
+                            <a class="nav-link" href="https://t.me/+ReqkBh3HzU4PSkUU"><img src="images/telegram.png" style="width: 1.5rem;" ></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     </head>
-    <body class="vgui-container vgui-font">
-        <h1>Cathook IPC Control Panel</h1>
-        <div id="container-login" class="vgui-outset">
-            If you don't see any data, please login using the password shown in console and refresh the page
-            <input id="api-password" type="text" placeholder="Password">
-            <input id="api-login-button" type="button" value="Login">
-        </div>
-        <br>
-        <div id="console-container">
-            <span><input type="text" id="console" placeholder="command for every client" size=64 class="vgui-border-inset"></span>
-            <input type="button" id="console-send" value="Submit" class="vgui-border-out">
-        </div>
-        <br>
-        <div id="status" class="nohighlight">
-            <span>Status: </span><span id="status-text">initializing</span>
-        </div>
-        <div>
-            <input type="button" id="bot-restartall" value="Restart all"> <input type="button" id="bot-terminateall" value="Terminate all"> <input type="button" id="bot-refresh" value="Refresh bot list"> <input id="bot-quota" value="3"> <input id="bot-quota-apply" type="button" value="Apply quota">
-        </div>
-        <br>
-        <div id="table-container">
-            <table id="clients" class="vgui-table vgui-inset">
-                <tr>
-                    <td>Actions</td>
-                    <td>Restarts</td>
-                    <td>Bot Name</td>
-                    <td>State</td>
-                    <td>Steam</td>
-                    <td>Uptime</td>
-                    <td>PID</td>
-                    <td>ID</td>
-                    <td>IPC Status</td>
-                    <td>Name</td>
-                    <td>Queue</td>
-                    <td>Total Score</td>
-                    <td>Score</td>
-                    <td>Shots</td>
-                    <td>Hit %</td>
-                    <td>Head %</td>
-                    <td>Connected</td>
-                    <td>Alive?</td>
-                    <td>Team</td>
-                    <td>Class</td>
-                    <td>Health</td>
-                    <td>Server IP</td>
-                    <td>Current map</td>
-                    <td>Players</td>
-                    <td>Bots</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <div class="nopad vmiddle">
-                <input type="checkbox" id="autorestart-bots">Auto-restart nonresponsive bots</input>
+    <body aria-hidden="List area for bots">
+        <div class="container">
+            <div id="table-container">
+                <table id="clients" class="bg-dark navbar-dark table table-hover">
+                    <thead style="font-size: 13px;">
+                        <tr >
+                            <td scope="row" style="width: 10rem !important;">Commands</td>
+                            <td scope="row">Restarts</td>
+                            <td scope="row">Name</td>
+                            <td scope="row">State</td>
+                            <td scope="row">Profile</td>
+                            <td scope="row">PlayTime</td>
+                            <td scope="row">Status</td>
+                            <td scope="row">Queue</td>
+                            <td scope="row">Total Score</td>
+                            <td scope="row">Current Score</td>
+                            <td scope="row">Connected</td>
+                            <td scope="row">Class</td>
+                            <td scope="row">Health</td>
+                            <td scope="row">Map</td>
+                            <td scope="row">Players</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                </table>
+                </tbody>
             </div>
         </div>
-        <div id="footer">
-            <hr>
-            <span class="nohighlight">
-                nullifiedcat, 2017 | <a href="https://github.com/nullifiedcat" target="_blank">github</a>
-            </span>
+
+        <div class="container" style="margin-top: 2rem;">
+            <!-- Required Because of script -->
+            <div hidden>
+                <div class="nopad vmiddle">
+                    <input type="checkbox" id="autorestart-bots">Auto-restart nonresponsive bots</input>
+                </div>
+
+                <div id="status" class="nohighlight" hidden>
+                    <span>Status: </span><span id="status-text">initializing</span>
+                </div>
+            </div>
+
+            <!-- Modals -->
+            <div class="modal fade" id="controls" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered" style="border-radius: 0px !important;">
+                <div class="modal-content" style="border-radius: 0px !important;">
+                    <div class="modal-header">
+                        <h1>Cathook Control Panel <small style="font-size: 23px;"> v1.0.5 </small></h1>
+                    </div>
+                    <div class="modal-body">
+                        <div id="console-container">
+                            <span>
+                                Use this to command every bot listed.
+                                <input type="text" id="console" placeholder="command for every client" size=45>
+                            </span>
+                            <input type="button" id="console-send" style="width: 4rem;" value="Submit">
+                            <br><br>
+                            Use this to apply more bots to the list. <br>
+                            <input id="bot-quota" placeholder="Add a number for more bots" size=45> 
+                            <input id="bot-quota-apply" type="button" style="width: 4rem;" value="Quota">
+                            <br><br>
+                            Use this to fix bots not being able to command.
+                            <input id="api-password" type="text" size="45" placeholder="Panel Password">
+                            <input id="api-login-button" type="button" style="width: 4rem;" value="Login">
+                        </div>
+                        <br>
+                        <div>
+                            <ol style="padding-left: 1rem;">
+                                <li>Restart - Restarts all bots in list.</li>
+                                <li>Terminate - Terminates all bots in list.</li>
+                                <li>Refresh - Refreshes all bots in the list.</li>
+                            </ol>
+                            <input type="button" style="width: 7rem;" id="bot-restartall" value="Restart"> 
+                            <input type="button" style="width: 7rem;" id="bot-terminateall" value="Terminate"> 
+                            <input type="button" style="width: 7rem;" id="bot-refresh" value="Refresh"> 
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

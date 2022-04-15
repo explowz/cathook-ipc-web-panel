@@ -1,41 +1,48 @@
 <html>
     <head>
-        <title>Cathook Control Panel</title>
-        <link rel="stylesheet" href="design/bootstrap.css">
-        <script src="design/cathook.js"></script>
-        <link rel="icon" href="images/favicon.ico">
-        <script src="design/boot.js"></script>
+        <title>Cathook Control</title>
+        <link rel="icon" href="images/favicon.ico"/>
+        <link rel="stylesheet" href="design/boot.css"/>
+        <link rel="stylesheet" href="design/style.css"/>
 
         <!-- Navbar Control Center -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container-fluid container">
-                <a class="navbar-brand" href="#">Cathook Control</a>
+            <div class="container-fluid">
+                <a class="navbar-brand">Cathook Control</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor02">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item" style="cursor: pointer;">
-                            <a class="nav-link" href="#controls" data-bs-toggle="modal" data-bs-target="#controls">Control Panel</a>
+                            <a class="nav-link" href="#controls" data-bs-toggle="modal" data-bs-target="#controls">Cathook Panel</a>
                         </li>
                         <li class="nav-item" style="cursor: pointer;">
-                            <a class="nav-link"><img src="images/discord.png" style="width: 1.5rem;" ></a>
+                            <a class="nav-link" href="https://github.com/explowz" target="_blank"><img src="images/github.png" style="width: 1.5rem;" ></a>
                         </li>
                         <li class="nav-item" style="cursor: pointer;">
-                            <a class="nav-link" href="https://t.me/+ReqkBh3HzU4PSkUU"><img src="images/telegram.png" style="width: 1.5rem;" ></a>
+                            <a class="nav-link" href="https://t.me/+ReqkBh3HzU4PSkUU" target="_blank"><img src="images/telegram.png" style="width: 1.5rem;"></a>
                         </li>
                     </ul>
                 </div>
+                <!-- Query Search Results -->
+                <span>Status <span id="status-text">Pending</span></span>
+                <!-- Query Search Results -->
             </div>
         </nav>
+        <!-- Navbar Control Center -->
+
     </head>
     <body aria-hidden="List area for bots">
-        <div class="container">
+
+        <!-- Bot Command Center -->
+        <div style="margin-top:-2px;">
             <div id="table-container">
-                <table id="clients" class="bg-dark navbar-dark table table-hover">
-                    <thead style="font-size: 13px;">
-                        <tr >
-                            <td scope="row" style="width: 10rem !important;">Commands</td>
+                <p class="card-text">
+                <table id="clients" class="table table-hover">
+                    <thead>
+                        <tr id="spanfix">
+                            <td  style="width: 10.5rem !important;">Commands</td>
                             <td scope="row">Restarts</td>
                             <td scope="row">Name</td>
                             <td scope="row">State</td>
@@ -50,26 +57,19 @@
                             <td scope="row">Health</td>
                             <td scope="row">Map</td>
                             <td scope="row">Players</td>
+                            <td scope="row">Bot</td>
                         </tr>
                     </thead>
                     <tbody>
+                        
+                    </tbody>
                 </table>
-                </tbody>
+                </p>
             </div>
         </div>
+        <!-- Bot Command Center -->
 
         <div class="container" style="margin-top: 2rem;">
-            <!-- Required Because of script -->
-            <div hidden>
-                <div class="nopad vmiddle">
-                    <input type="checkbox" id="autorestart-bots">Auto-restart nonresponsive bots</input>
-                </div>
-
-                <div id="status" class="nohighlight" hidden>
-                    <span>Status: </span><span id="status-text">initializing</span>
-                </div>
-            </div>
-
             <!-- Modals -->
             <div class="modal fade" id="controls" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered" style="border-radius: 0px !important;">
@@ -80,16 +80,16 @@
                     <div class="modal-body">
                         <div id="console-container">
                             <span>
-                                Use this to command every bot listed.
-                                <input type="text" id="console" placeholder="command for every client" size=45>
+                                Use this to send a command to every bot listed.
+                                <input type="text" id="console" placeholder="Send command to every client" size=45>
                             </span>
                             <input type="button" id="console-send" style="width: 4rem;" value="Submit">
                             <br><br>
-                            Use this to apply more bots to the list. <br>
+                            Use this to set the bots quota. <br>
                             <input id="bot-quota" placeholder="Add a number for more bots" size=45> 
                             <input id="bot-quota-apply" type="button" style="width: 4rem;" value="Quota">
                             <br><br>
-                            Use this to fix bots not being able to command.
+                            Web Panel Password:
                             <input id="api-password" type="text" size="45" placeholder="Panel Password">
                             <input id="api-login-button" type="button" style="width: 4rem;" value="Login">
                         </div>
@@ -111,4 +111,9 @@
             </div>
         </div>
     </body>
+
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/cathook.js"></script>
+    <script defer src="design/boot/boot.js"></script>
+
 </html>

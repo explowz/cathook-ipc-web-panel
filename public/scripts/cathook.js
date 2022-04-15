@@ -9967,7 +9967,7 @@
             row.toggleClass("disconnected", false);
             row
               .find(".client-uptime-server")
-              .text(format(Date.now() - data.ts_connected * 1000));
+              .text(format(Date.now() - data.ts_connected /= 1000));
             if (data.ts_disconnected) {
               row
                 .find(".client-uptime-queue")

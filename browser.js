@@ -3,15 +3,15 @@ const format = require('format-duration');
 const request = require('browser-request');
 
 const STATE = [ 
-	'INITIALIZING',
-	'INITIALIZED',
-	'PREPARING',
-	'STARTING',
-	'WAITING',
-	'RUNNING',
-	'RESTARTING',
-	'STOPPING',
-	'NO ACCOUNT'
+	'Initalizing',
+	'Initalized',
+	'Preparing',
+	'Starting',
+	'Waiting',
+	'Running',
+	'Restarting',
+	'Stopping',
+	'No Account'
 ];
 
 const classes = [
@@ -23,21 +23,18 @@ const classes = [
 ];
 
 const teams = [
-    "UNK", "SPEC", "RED", "BLU"
+    "Choosing", "Spectator", "Red", "Blue"
 ]
 
 const status = {
     info: function(text) {
-        console.log('[INFO]', text);
-        $('#status-text').attr('class', '').text(text);
+        $('#status-text').attr('class', 'text-success').text(text);
     },
     warning: function(text) {
-        console.log('[WARNING]', text);
-        $('#status-text').attr('class', 'warning').text(text);
+        $('#status-text').attr('class', 'text-warning').text(text);
     },
     error: function(text) {
-        console.log('[ERROR]', text);
-        $('#status-text').attr('class', 'error').text(text);
+        $('#status-text').attr('class', 'text-danger').text(text);
     }
 }
 
@@ -57,7 +54,7 @@ function updateData() {
 }
 
 function commandButtonCallback() {
-    var cmdz = prompt('Enter a command');
+    var cmdz = prompt('Enter a command for this bot');
     if (cmdz) {
 		cmd('exec', {
 			target: parseInt($(this).parent().parent().find('.client-id').text()),
@@ -70,10 +67,9 @@ function restartButtonCallback() {
 	console.log('restarting',$(this).parent().parent().attr('data-id'));
     request(`api/bot/${$(this).parent().parent().attr('data-id')}/restart`, function(e, r, b) {
 		if (e) {
-			console.log(e,b);
-			status.error('Error restarting bot');
+			status.error('Error Restarting');
 		} else {
-			status.info('Bot restarted');
+			status.info('Bot Restarted');
 		}
 	});
 }
@@ -82,10 +78,9 @@ function restartAllButtonCallback() {
 	console.log('restarting all bots');
     request(`api/bot/all/restart`, function(e, r, b) {
 		if (e) {
-			console.log(e,b);
-			status.error('Error restarting bots');
+			status.error('Error Restarting');
 		} else {
-			status.info('Bots restarted');
+			status.info('Bots Restarted');
 		}
 	});
 }
@@ -94,10 +89,9 @@ function terminateButtonCallback() {
 	console.log('terminating',$(this).parent().parent().attr('data-id'));
     request(`api/bot/${$(this).parent().parent().attr('data-id')}/terminate`, function(e, r, b) {
 		if (e) {
-			console.log(e,b);
-			status.error('Error terminating bot');
+			status.error('Error Terminating');
 		} else {
-			status.info('Bot terminated');
+			status.info('Bot Terminated');
 		}
 	});
 }
@@ -106,10 +100,9 @@ function terminateAllButtonCallback() {
 	console.log('restarting all bots');
     request(`api/bot/all/terminate`, function(e, r, b) {
 		if (e) {
-			console.log(e,b);
-			status.error('Error terminating bots');
+			status.error('Error Terminating');
 		} else {
-			status.info('Bots terminated');
+			status.info('Bots Terminated');
 		}
 	});
 }
@@ -153,7 +146,7 @@ function updateIPCData(row, id, data) {
 	} else if (time < 45) {
 		row.find('.client-status').removeClass('error').addClass('warning').text('Warning ' + time);
 	} else {
-		if ($('#autorestart-bots').prop('checked')) {
+		while (1) {
 			if ((Date.now() - data.ts_injected * 1000 > 20) && data.heartbeat && !autorestart[row.attr('data-id')] || (Date.now() - autorestart[row.attr('data-id')]) > 1000 * 5) {
 				autorestart[row.attr('data-id')] = Date.now();
 				console.log('auto-restarting' ,row.attr('data-id'));
@@ -167,9 +160,9 @@ function updateIPCData(row, id, data) {
 				});
 			}
 		}
-		row.find('.client-status').removeClass('warning').addClass('error').text('Likely dead ' + time);
+		row.find('.client-status').removeClass('warning').addClass('error').text('Dead ' + time);
 	}
-	//row.find('.client-uptime').text(format(time - data.starttime));
+
 	row.find('.client-pid').text(data.pid);
 	row.find('.client-id').text(id);
 	row.find('.client-name').text(data.name);
@@ -179,6 +172,7 @@ function updateIPCData(row, id, data) {
 	row.find('.client-shots').text(data.accumulated.shots);
 	row.find('.client-hitrate').text(hitrate + '%');
 	row.find('.client-hsrate').text(hsrate + '%');
+
 	if (data.connected) {
 		row.toggleClass('disconnected', false);
 		row.find('.client-uptime-server').text(format(Date.now() - data.ts_connected * 1000));
@@ -201,7 +195,7 @@ function updateIPCData(row, id, data) {
 			row.find('.client-uptime-queue').text(format(Date.now() - data.ts_injected * 1000));
 		}
 		row.toggleClass('disconnected', true);
-		row.find('.connected').text('N/A');
+		row.find('.connected').text('None');
 	}
 }
 
@@ -218,7 +212,7 @@ function updateUserData(bot, data) {
         row.find('.client-steam').empty().append($('<a></a>').text('Profile').attr('href', `https://steamcommunity.com/profiles/[U:1:${data.ipc.friendid}]`).attr('target', '_blank'));
 	}
 	if (data.state != 5) {
-		row.find('.active').text('N/A');
+		row.find('.active').text('None');
 	}
 	updateIPCData(row, data.ipcID, data.ipc);
 }
@@ -226,35 +220,26 @@ function updateUserData(bot, data) {
 function addClientRow(botid) {
     var row = $('<tr></tr>').attr('data-id', botid).addClass('disconnected stopped');
     var actions = $('<td></td>').attr('class', 'client-actions');
-    actions.append($('<input>').attr('type', 'button').attr('value', 'Command').on('click', commandButtonCallback));
-    actions.append($('<input>').attr('type', 'button').attr('value', 'Restart').on('click', restartButtonCallback));
-    actions.append($('<input>').attr('type', 'button').attr('value', 'Terminate').on('click', terminateButtonCallback));
+    actions.append($('<input>').attr('type', 'button').attr('value', 'Command').on('click', commandButtonCallback).attr("class", "btn btn-sm lesshigh btn-success"));
+    actions.append($('<input>').attr('type', 'button').attr('value', 'Restart').on('click', restartButtonCallback).attr("class", "btn btn-sm lesshigh btn-warning"));
+    actions.append($('<input>').attr('type', 'button').attr('value', 'Terminate').on('click', terminateButtonCallback).attr("class", "btn btn-sm lesshigh btn-danger"));
     row.append(actions);
-	row.append($('<td></td>').attr('class', 'client-restarts').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-bot-name').text(botid));
-	row.append($('<td></td>').attr('class', 'client-state').text('UNDEFINED'));
-	row.append($('<td></td>').attr('class', 'client-steam').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-uptime-total active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-pid active').text('N/A'));
-	row.append($('<td></td>').attr('class', 'client-id active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-status active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-name active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-uptime-queue active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-total active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-score connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-shots active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-hitrate active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-hsrate active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-uptime-server connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-alive connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-team connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-class connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-health connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-ip connected active').text('N/A'));
-    row.append($('<td></td>').attr('class', 'client-map connected active').text('NYI'));
-    row.append($('<td></td>').attr('class', 'client-players connected active').text('NYI'));
-    row.append($('<td></td>').attr('class', 'client-bots connected active').text('NYI'));
-    $('#clients').append(row);
+	row.append($('<td></td>').attr('class', 'client-restarts').text('None'));
+	row.append($('<td></td>').attr('class', 'client-name active').text('None'));
+	row.append($('<td></td>').attr('class', 'client-state').text('Detecting'));
+	row.append($('<td></td>').attr('class', 'client-steam').text('None'));
+    row.append($('<td></td>').attr('class', 'client-uptime-total active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-status active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-uptime-queue active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-total active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-score connected active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-uptime-server connected active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-class connected active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-health connected active').text('None'));
+    row.append($('<td></td>').attr('class', 'client-map connected active').text('Waiting'));
+    row.append($('<td></td>').attr('class', 'client-players connected active').text('Waiting'));
+	row.append($('<td></td>').attr('class', 'client-id active').text('None'));
+	$('#clients').append(row);
     return row;
 }
 
@@ -270,7 +255,7 @@ function refreshComplete() {
 	}, function(e, r, b) {
 		if (e) {
 			console.log(e, b);
-			status.error('Error refreshing the list!');
+			status.error('Error Refreshing');
 			return;
 		}
 		var count = 0;
@@ -286,7 +271,7 @@ function refreshComplete() {
 
 $(function() {
 	updateData();
-    status.info('init done');
+    status.info('Ready');
 	setInterval(updateData, 1000 * 2);
 	$('#console').on('keypress', function(e) {
 		if (e.keyCode == '13') {
@@ -298,9 +283,9 @@ $(function() {
 		request.get('api/quota/' + $('#bot-quota').val(), function(e, r, b) {
 			if (e) {
 				console.log(e, b);
-				status.error('Error applying bot quota!');
+				status.error('Error Applying');
 			} else {
-				status.info('Applied bot quota successfully');
+				status.info('Applied Quota');
 			}
 		});
 	});

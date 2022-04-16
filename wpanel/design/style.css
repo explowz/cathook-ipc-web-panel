@@ -1,42 +1,45 @@
-button {
-  color: white   ;
-}
-
+/* table fix */
 tr {
-  border-top: 1px solid transparent   !important ;
-  border: 1px solid none !important  ;
+  border-top: 1px solid transparent !important;
+  border: 1px solid none !important;
   padding: 40px !important;
 }
 
+/* button fix */
 .lesshigh {
   font-size: 9px;
-  padding-right: 8px;
+  height: 1.3rem;
+} button {
+  color: white;
 }
+
+/* rainbows */
 .rainbow {
   background-image: repeating-linear-gradient(45deg, violet, indigo, blue, green, yellow, orange, red, violet);
   text-align: center;
   background-size: 800% 800%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 24px;
+  font-size: 23px;
   animation: rainbow 8s ease infinite;
+} @keyframes rainbow {
+  0% {background-position:0% 50%}
+  50% {background-position:100% 25%}
+  100% {background-position:0% 50%}
 }
 
-@keyframes rainbow { 
-  0%{background-position:0% 50%}
-  50%{background-position:100% 25%}
-  100%{background-position:0% 50%}
-}
-
+/* selection */
 ::selection {
-  background: #007bff   ;
-  color: white  ;
+  background: #007bff;
+  color: white;
 }
 
+/* fix */
 #spanfix {
-  width: 6rem  !important ;
+  width: 6rem !important;
 }
 
+/* cursor's */
 button, a:hover, .btn {
   cursor: url('cursor/hover.cur'), auto !important;
 }

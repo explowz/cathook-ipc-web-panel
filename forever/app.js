@@ -6,11 +6,9 @@ var manager = null;
 class app {
 	constructor(app, cc) {
 		if (process.getuid() != 0) {
-			console.log('[FATAL] Bot manager needs superuser privileges, please restart as root');
 			process.exit(1);
 		}
 		if (manager) {
-			console.log('[FATAL] Initialized function for bot manager called twice');
 			process.exit(1);
 		} else {
 			manager = new BotManager(cc);
@@ -22,7 +20,6 @@ class app {
 			if (!config.hasOwnProperty(req.params.option))
 				res.status(404).end();
 			else {
-				console.log(`Switching ${req.params.option} to ${req.params.value}`)
 				config[req.params.option] = req.params.value;
 				res.status(200).end('' + config[req.params.option]);
 			}
@@ -113,3 +110,5 @@ class app {
 }
 
 exports.Forever = app;
+
+// module for bots

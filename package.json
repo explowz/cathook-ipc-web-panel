@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nullifiedcat/cathook-ipc-web-panel.git"
+    "url": "git+https://github.com/explowz/cathook-ipc-web-panel.git"
   },
-  "author": "nullifiedcat",
+  "author": "nullifiedcat & Bintr",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nullifiedcat/cathook-ipc-web-panel/issues"
+    "url": "https://github.com/explowz/cathook-ipc-web-panel/issues"
   },
-  "homepage": "https://github.com/nullifiedcat/cathook-ipc-web-panel#readme",
+  "homepage": "https://github.com/explowz/cathook-ipc-web-panel#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "browser-request": "^0.3.3",

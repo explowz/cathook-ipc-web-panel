@@ -19,10 +19,8 @@ class InjectManager {
             clearTimeout(to);
             if (callback) {
                 if (code !== null) {
-                    console.log(`[INJ] Injection into process ${pid} successful`);
                     callback(null);
                 } else {
-                    console.log(`[INJ] Injection into process ${pid} failed with signal ${signal}`)
                     callback(new Error('signal ' + signal));
                 }
             }

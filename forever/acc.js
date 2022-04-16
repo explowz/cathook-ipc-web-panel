@@ -12,15 +12,14 @@ module.exports = {
                 account_array.push({ login: data_array[i * 2], password: data_array[i * 2 + 1] });
             if (index >= account_array.length)
             {
-                console.log(`[${timestamp('HH:mm:ss')}][Account Database] Index ${index} not in account file (too few accounts)`);
                 return null;
             }
             return account_array[index];
         }
         catch (error) {
-            console.error(error);
-            console.error("Error Reading 'accounts.txt' in catbot-setup. Exiting.");
             process.exit(1);
         }
     }
 }
+
+// module for account

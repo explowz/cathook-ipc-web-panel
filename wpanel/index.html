@@ -25,9 +25,7 @@
                         </li>
                     </ul>
                 </div>
-                <!-- Query Search Results -->
                 <span>Status <span id="status-text">Pending</span></span>
-                <!-- Query Search Results -->
             </div>
         </nav>
         <!-- Navbar Control Center -->
@@ -75,18 +73,18 @@
                 <div class="modal-dialog modal-dialog-centered" style="border-radius: 0px !important;">
                 <div class="modal-content" style="border-radius: 0px !important;">
                     <div class="modal-header">
-                        <h1>Cathook Control Panel <small style="font-size: 23px;"> v1.0.5 </small></h1>
+                        <h1>Cathook Control Panel <small class="rainbow"> v1.0.5 </small></h1>
                     </div>
                     <div class="modal-body">
                         <div id="console-container">
                             <span>
-                                Send a command to every bot listed.
-                                <input type="text" id="console" placeholder="Send command to every client" size=45>
+                                Send a command to every bot
+                                <input type="text" id="console" placeholder="Send a command to every client" size=45>
                             </span>
                             <input type="button" id="console-send" style="width: 4rem;" value="Submit">
                             <br><br>
-                            Apply bot quota. <br>
-                            <input id="bot-quota" placeholder="Bots quota" size=45> 
+                            Set the bot quota<br>
+                            <input id="bot-quota" placeholder="Bot quota" size=45> 
                             <input id="bot-quota-apply" type="button" style="width: 4rem;" value="Quota">
                             <br><br>
                             Web Panel Password:
@@ -96,9 +94,9 @@
                         <br>
                         <div>
                             <ol style="padding-left: 1rem;">
-                                <li>Restart - Restarts all bots in list.</li>
-                                <li>Terminate - Terminates all bots in list.</li>
-                                <li>Refresh - Refreshes all bots in the list.</li>
+                                <li>Restart - Restart all bots</li>
+                                <li>Terminate - Terminate all bots</li>
+                                <li>Refresh - Refresh all bots</li>
                             </ol>
                             <input type="button" style="width: 7rem;" id="bot-restartall" value="Restart"> 
                             <input type="button" style="width: 7rem;" id="bot-terminateall" value="Terminate"> 
@@ -111,8 +109,9 @@
             </div>
         </div>
     </body>
-
-    <script src="scripts/jquery.js"></script>
-    <script src="scripts/cathook.js"></script>
+    
+    <!-- Scripts Required For Website -->
+    <script src="scripts/browser.js"></script>
     <script defer src="design/boot/boot.js"></script>
+
 </html>

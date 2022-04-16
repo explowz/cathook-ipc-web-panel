@@ -6,7 +6,7 @@ class BotManager {
     constructor(cc) {
         var self = this;
         try {
-            fs.mkdirSync('logs');
+            fs.mkdirSync('network/wpanel-network/wpanel-logs');
         } catch (e) { }
         this.bots = [];
         this.cc = cc;
@@ -20,7 +20,6 @@ class BotManager {
         var self = this;
         Bot.currentlyStartingGames = 0;
 
-        // Add new bots
         this.enforceQuota();
 
         for (var i = self.bots.length - 1; i >= 0; i--) {

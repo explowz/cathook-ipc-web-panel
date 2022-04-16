@@ -15,7 +15,6 @@ class SimpleAuth
     {
         if (!req.session.auth && (req.ip == '::1' || req.ip == '127.0.0.1' || req.ip == '::ffff:127.0.0.1'))
         {
-            console.log(`Auth: ${req.ip} by LOCAL`);
             req.session.auth = 1;
         }
 
@@ -29,12 +28,7 @@ class SimpleAuth
         {
             if (req.query.key === this.apikey)
             {
-                console.log(`Auth: ${req.ip} by apikey`);
                 req.session.auth = 1;
-            }
-            else
-            {
-                console.log(`Auth fail: ${req.ip} by invalid apikey ${req.query.key}`)
             }
         }
 
@@ -49,13 +43,11 @@ class SimpleAuth
     {
         if (req.body.password === this.password)
         {
-            console.log(`Auth: ${req.ip} by password ${req.body.password}`);
             req.session.auth = 1;
             res.status(200).end();
         }
         else
         {
-            console.log(`Auth fail: ${req.ip} by password ${req.body.password}`);
             res.status(403).end();
         }
     }

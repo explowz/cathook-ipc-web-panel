@@ -1,7 +1,6 @@
 const child_process = require('child_process');
 const EventEmitter = require('events');
 const extend = require('extend');
-
 const CONSOLE_PATH = '/opt/cathook/ipc/bin/console';
 
 class CathookConsole extends EventEmitter {
@@ -13,7 +12,6 @@ class CathookConsole extends EventEmitter {
         this.process.on('exit', function (code) {
             self.init = false;
             self.emit('exit');
-            console.log('[!] cathook console exited with code', code);
         });
         var buff = '';
         this.process.stdout.on('data', function (data) {

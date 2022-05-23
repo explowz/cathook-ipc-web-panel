@@ -3,8 +3,8 @@ const format = require('format-duration');
 const request = require('browser-request');
 
 const STATE = [ 
-    'Initalizing',
-    'Initalized',
+    'Initializing',
+    'Initialized',
     'Preparing',
     'Starting',
     'Waiting',
@@ -23,7 +23,7 @@ const classes = [
 ];
 
 const teams = [
-    "Choosing", "Spectator", "Red", "Blue"
+    "Choosing", "Spectator", "RED", "BLU"
 ]
 
 const status = {
@@ -38,23 +38,23 @@ const status = {
     }
 }
 
-var last_count = 0;
+let last_count = 0;
 
 function updateData() {
     request('api/state', function(error, r, b) {
         if (error) return;
-        var data = JSON.parse(b);
-        if (last_count != Object.keys(data.bots).length) {
+        const data = JSON.parse(b);
+        if (last_count !== Object.keys(data.bots).length) {
             refreshComplete();
         }
-        for (var i in data.bots) {
+        for (let i in data.bots) {
             updateUserData(i, data.bots[i]);
         }
     });
 }
 
 function commandButtonCallback() {
-    var cmdz = prompt('Enter a command for this bot');
+    const cmdz = prompt('Enter a command for this bot');
     if (cmdz) {
         cmd('exec', {
             target: parseInt($(this).parent().parent().find('.client-id').text()),
@@ -134,19 +134,20 @@ function cmd(command, data, callback) {
     });
 }
 
-var autorestart = {};
+let autorestart = {};
 
 function updateIPCData(row, id, data) {
     if (!data) {
         return;
     }
-    var time = Math.floor(Date.now() / 1000 - data.heartbeat);
+    const time = Math.floor(Date.now() / 1000 - data.heartbeat);
     if (!data.heartbeat || time < 4) {
         row.find('.client-status').removeClass('error warning').text('OK ' + time);
     } else if (time < 45) {
         row.find('.client-status').removeClass('error').addClass('warning').text('Warning ' + time);
     } else {
-        while (1) {
+        row.find('.client-status').removeClass('warning').addClass('error').text('Dead ' + time);
+        while (true) {
             if ((Date.now() - data.ts_injected * 1000 > 20) && data.heartbeat && !autorestart[row.attr('data-id')] || (Date.now() - autorestart[row.attr('data-id')]) > 1000 * 5) {
                 autorestart[row.attr('data-id')] = Date.now();
                 console.log('auto-restarting' ,row.attr('data-id'));
@@ -160,18 +161,18 @@ function updateIPCData(row, id, data) {
                 });
             }
         }
-        row.find('.client-status').removeClass('warning').addClass('error').text('Dead ' + time);
     }
 
     row.find('.client-pid').text(data.pid);
     row.find('.client-id').text(id);
     row.find('.client-name').text(data.name);
     row.find('.client-total').text(data.accumulated.score);
-    var hitrate = Math.floor((data.accumulated.shots ? data.accumulated.hits / data.accumulated.shots : 0) * 100);
-    var hsrate = Math.floor((data.accumulated.hits ? data.accumulated.headshots / data.accumulated.hits : 0) * 100);
+    const hitrate = Math.floor((data.accumulated.shots ? data.accumulated.hits / data.accumulated.shots : 0) * 100);
+    const hsrate = Math.floor((data.accumulated.hits ? data.accumulated.headshots / data.accumulated.hits : 0) * 100);
     row.find('.client-shots').text(data.accumulated.shots);
     row.find('.client-hitrate').text(hitrate + '%');
     row.find('.client-hsrate').text(hsrate + '%');
+    row.find('.client-uptime-total').text(format(Date.now() - data.ts_injected * 1000));
 
     if (data.connected) {
         row.toggleClass('disconnected', false);
@@ -200,26 +201,25 @@ function updateIPCData(row, id, data) {
 }
 
 function updateUserData(bot, data) {
-    var row = $(`tr[data-id="${bot}"]`);
+    const row = $(`tr[data-id="${bot}"]`);
     if (!row.length) return;
-    row.toggleClass('stopped', data.state != 5);
+    row.toggleClass('stopped', data.state !== 5);
     row.find('.client-state').text(STATE[data.state]);
-    if (data.state == 5 && data.ipc) {
+    if (data.state === 5 && data.ipc) {
         row.attr('data-pid', data.ipc.pid);
         row.find('.client-pid').text(data.ipc.pid);
-        row.find('.client-uptime-total').text(format(Date.now() - data.started));
         row.find('.client-restarts').text(data.restarts);
         row.find('.client-steam').empty().append($('<a></a>').text('Profile').attr('href', `https://steamcommunity.com/profiles/[U:1:${data.ipc.friendid}]`).attr('target', '_blank'));
     }
-    if (data.state != 5) {
+    if (data.state !== 5) {
         row.find('.active').text('None');
     }
     updateIPCData(row, data.ipcID, data.ipc);
 }
 
 function addClientRow(botid) {
-    var row = $('<tr></tr>').attr('data-id', botid).addClass('disconnected stopped');
-    var actions = $('<td></td>').attr('class', 'client-actions');
+    const row = $('<tr></tr>').attr('data-id', botid).addClass('disconnected stopped');
+    const actions = $('<td></td>').attr('class', 'client-actions');
     actions.append($('<input>').attr('type', 'button').attr('value', 'Command').on('click', commandButtonCallback).attr("class", "btn btn-sm lesshigh btn-success"));
     actions.append($('<input>').attr('type', 'button').attr('value', 'Restart').on('click', restartButtonCallback).attr("class", "btn btn-sm lesshigh btn-warning"));
     actions.append($('<input>').attr('type', 'button').attr('value', 'Terminate').on('click', terminateButtonCallback).attr("class", "btn btn-sm lesshigh btn-danger"));
@@ -257,10 +257,10 @@ function refreshComplete() {
             status.error('Error Refreshing');
             return;
         }
-        var count = 0;
+        let count = 0;
         var b = JSON.parse(b);
         console.log(b);
-        for (var i in b.bots) {
+        for (let i in b.bots) {
             count++;
             addClientRow(i)
         }
@@ -273,7 +273,7 @@ $(function() {
     status.info('Ready');
     setInterval(updateData, 1000 * 2);
     $('#console').on('keypress', function(e) {
-        if (e.keyCode == '13') {
+        if (e.keyCode === '13') {
             runCommand();
             e.preventDefault();
         }

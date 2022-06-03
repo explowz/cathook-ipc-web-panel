@@ -5,14 +5,13 @@ class Passwd {
         this.users = {};
         this.nameMap = {};
     }
-
     parse(data) {
         this.users = {};
         this.nameMap = {};
-        for (const s of data.split('\n')) {
-            const m = /(.+):.:(\d+):(\d+):(?:.+?)?:(.+?):/i.exec(s);
+        for (var s of data.split('\n')) {
+            var m = /(.+):.:(\d+):(\d+):(?:.+?)?:(.+?):/i.exec(s);
             if (!m) continue;
-            const user = {
+            var user = {
                 name: m[1],
                 uid: m[2],
                 gid: m[3],
@@ -22,10 +21,9 @@ class Passwd {
             this.nameMap[user.name] = user.uid;
         }
     }
-
     read(callback) {
-        const self = this;
-        fs.readFile('/etc/passwd', function (error, data) {
+        var self = this;
+        fs.readFile('/etc/passwd', function(error, data) {
             if (error) {
                 if (callback)
                     callback(error);
@@ -35,6 +33,15 @@ class Passwd {
             if (callback)
                 callback(null, self);
         });
+    }
+    readSync() {
+        this.parse(fs.readFileSync('/etc/passwd').toString());
+    }
+    byName(name) {
+        return this.users[this.nameMap[name]];
+    }
+    byUID(uid) {
+        return this.users[uid];
     }
 }
 
@@ -43,14 +50,13 @@ class Groups {
         this.groups = {};
         this.nameMap = {};
     }
-
     parse(data) {
         this.groups = {};
         this.nameMap = {};
-        for (const s of data.split('\n')) {
-            const m = /(.+):.:(\d+):/i.exec(s);
+        for (var s of data.split('\n')) {
+            var m = /(.+):.:(\d+):/i.exec(s);
             if (!m) continue;
-            const group = {
+            var group = {
                 name: m[1],
                 gid: m[2],
             };
@@ -58,10 +64,9 @@ class Groups {
             this.nameMap[group.name] = group.gid;
         }
     }
-
     read(callback) {
-        const self = this;
-        fs.readFile('/etc/group', function (error, data) {
+        var self = this;
+        fs.readFile('/etc/group', function(error, data) {
             if (error) {
                 if (callback)
                     callback(error);
@@ -71,6 +76,15 @@ class Groups {
             if (callback)
                 callback(null, self);
         });
+    }
+    readSync() {
+        this.parse(fs.readFileSync('/etc/group').toString());
+    }
+    byName(name) {
+        return this.groups[this.nameMap[name]];
+    }
+    byGID(gid) {
+        return this.groups[gid];
     }
 }
 

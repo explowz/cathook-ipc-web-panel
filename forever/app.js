@@ -1,11 +1,11 @@
 const BotManager = require('./botmanager');
 const config = require('./config');
 
-let manager = null;
+var manager = null;
 
 class app {
     constructor(app, cc) {
-        if (process.getuid() !== 0) {
+        if (process.getuid() != 0) {
             process.exit(1);
         }
         if (manager) {
@@ -32,11 +32,11 @@ class app {
         });
 
         app.get('/api/list', function (req, res) {
-            const result = {};
+            var result = {};
             result.quota = manager.quota;
             result.count = manager.bots.length;
             result.bots = {};
-            for (const i of manager.bots) {
+            for (var i of manager.bots) {
                 result.bots[i.name] = {
                     user: i.user
                 };
@@ -45,8 +45,8 @@ class app {
         });
 
         app.get('/api/state', function (req, res) {
-            const result = {bots: {}};
-            for (const i of manager.bots) {
+            var result = { bots: {} };
+            for (var i of manager.bots) {
                 result.bots[i.name] = {
                     ipc: i.ipcState,
                     restarts: i.restarts,
@@ -60,14 +60,13 @@ class app {
         });
 
         app.get('/api/bot/:bot/restart', function (req, res) {
-            let bot;
             if (req.params.bot === "all") {
-                for (bot of manager.bots)
+                for (var bot of manager.bots)
                     bot.restart();
                 res.status(200).end();
                 return;
             }
-            bot = manager.bot(req.params.bot);
+            var bot = manager.bot(req.params.bot);
             if (bot) {
                 bot.restart();
                 res.status(200).end();
@@ -79,14 +78,13 @@ class app {
         });
 
         app.get('/api/bot/:bot/terminate', function (req, res) {
-            let bot;
             if (req.params.bot === "all") {
-                for (bot of manager.bots)
+                for (var bot of manager.bots)
                     bot.stop();
                 res.status(200).end();
                 return;
             }
-            bot = manager.bot(req.params.bot);
+            var bot = manager.bot(req.params.bot);
             if (bot) {
                 bot.stop();
                 res.status(200).end();
@@ -105,7 +103,8 @@ class app {
         });
     }
 
-    stop() {
+    stop()
+    {
         this.manager.stop();
     }
 }

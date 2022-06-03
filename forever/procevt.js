@@ -19,29 +19,25 @@ class ProcEvents extends EventEmitter {
         this.interval = 0;
         this.setMaxListeners(256);
     }
-
     start() {
         this.interval = setInterval(this.update.bind(this), 500);
     }
-
     stop() {
         clearInterval(this.interval);
     }
-
     storeProcessData(pid) {
-        const self = this;
-        fs.readFile(`/proc/${pid}/status`, function (err, data) {
+        var self = this;
+        fs.readFile(`/proc/${pid}/status`, function(err, data) {
             if (err) {
-                console.log(err);
                 return;
-            }
-
-            let name = '';
-            let uid = '';
-            const lines = data.toString().split('\n');
-            lines.forEach(function (line) {
-                const match_name = /Name:\t(.+)$/i.exec(line);
-                const match_uid = /Uid:\t\d+\t(\d+)/.exec(line);
+                console.log(err);
+            };
+            var name = '';
+            var uid = '';
+            var lines = data.toString().split('\n');
+            lines.forEach(function(line) {
+                var match_name = /Name:\t(.+)$/i.exec(line);
+                var match_uid = /Uid:\t\d+\t(\d+)/.exec(line);
                 if (match_name) name = match_name[1];
                 if (match_uid) uid = match_uid[1];
             });
@@ -51,45 +47,42 @@ class ProcEvents extends EventEmitter {
             }
         });
     }
-
     checkProcess(pid) {
-        const self = this;
-        fs.stat(`/proc/${pid}`, function (err, stat) {
+        var self = this;
+        fs.stat(`/proc/${pid}`, function(err, stat) {
             if (err) {
-                try {
+        try {
                     self.emit('death', self.cache[pid]);
                     self.cache[pid].emit('exit');
                     delete self.cache[pid];
-                } catch (e) {
-                    console.log(e);
-                }
+        } catch (e) {
+            console.log(e);
+        }
             }
         });
     }
-
     update() {
-        const self = this;
+        var self = this;
         if (this.init) {
             if (!--this.init) {
                 self.emit('init');
             }
-        }
-
+        };
         // Discard old processes
-        for (const key in self.cache) {
+        for (var key in self.cache) {
             this.checkProcess(key);
         }
         // Check for new processes
-        fs.readdir('/proc', function (err, files) {
+        fs.readdir('/proc', function(err, files) {
             if (err) return;
-            files.forEach(function (file) {
-                const pid = file;
+            files.forEach(function(file) {
+                var pid = file;
                 if (self.cache[pid]) {
                     return;
                 }
                 if (/^\d+$/.test(file)) {
                     file = path.resolve('/proc', file);
-                    fs.stat(file, function (err, stats) {
+                    fs.stat(file, function(err, stats) {
                         if (err) return;
                         if (stats.isDirectory()) {
                             self.storeProcessData(pid);
@@ -100,12 +93,11 @@ class ProcEvents extends EventEmitter {
             self.emit('update');
         });
     }
-
     find(name, uid) {
-        const self = this;
-        const result = [];
-        for (const key in self.cache) {
-            if (self.cache[key].uid === uid && self.cache[key].name === name) {
+        var self = this;
+        var result = [];
+        for (var key in self.cache) {
+            if (self.cache[key].uid == uid && self.cache[key].name == name) {
                 result.push(self.cache[key]);
             }
         }

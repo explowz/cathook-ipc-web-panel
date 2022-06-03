@@ -4,10 +4,12 @@ class ExecQueue {
         this.queue = [];
         this.interval = setInterval(this.exec.bind(this), rate);
     }
+
     exec() {
-        var a = (this.queue.shift());
+        const a = (this.queue.shift());
         if (a) a();
     }
+
     push(callback) {
         this.queue.push(callback);
     }

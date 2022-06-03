@@ -1,11 +1,11 @@
 const BotManager = require('./botmanager');
 const config = require('./config');
 
-var manager = null;
+let manager = null;
 
 class app {
     constructor(app, cc) {
-        if (process.getuid() != 0) {
+        if (process.getuid() !== 0) {
             process.exit(1);
         }
         if (manager) {
@@ -45,8 +45,8 @@ class app {
         });
 
         app.get('/api/state', function (req, res) {
-            var result = { bots: {} };
-            for (var i of manager.bots) {
+            const result = {bots: {}};
+            for (const i of manager.bots) {
                 result.bots[i.name] = {
                     ipc: i.ipcState,
                     restarts: i.restarts,
@@ -60,13 +60,14 @@ class app {
         });
 
         app.get('/api/bot/:bot/restart', function (req, res) {
+            let bot;
             if (req.params.bot === "all") {
-                for (var bot of manager.bots)
+                for (bot of manager.bots)
                     bot.restart();
                 res.status(200).end();
                 return;
             }
-            var bot = manager.bot(req.params.bot);
+            bot = manager.bot(req.params.bot);
             if (bot) {
                 bot.restart();
                 res.status(200).end();
@@ -78,13 +79,14 @@ class app {
         });
 
         app.get('/api/bot/:bot/terminate', function (req, res) {
+            let bot;
             if (req.params.bot === "all") {
-                for (var bot of manager.bots)
+                for (bot of manager.bots)
                     bot.stop();
                 res.status(200).end();
                 return;
             }
-            var bot = manager.bot(req.params.bot);
+            bot = manager.bot(req.params.bot);
             if (bot) {
                 bot.stop();
                 res.status(200).end();
@@ -103,8 +105,7 @@ class app {
         });
     }
 
-    stop()
-    {
+    stop() {
         this.manager.stop();
     }
 }

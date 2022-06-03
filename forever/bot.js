@@ -5,9 +5,10 @@ const timestamp = require('time-stamp');
 const fs = require('fs');
 const procfs = require('procfs-stats');
 const path = require("path");
-const {Tail} = require("tail");
+const { Tail } = require("tail");
 
 const accounts = require('./acc.js');
+const config = require('./config');
 
 const LAUNCH_OPTIONS_STEAM = 'firejail --dns=1.1.1.1 %NETWORK% --noprofile --private="%HOME%" --name=%JAILNAME% --env=PULSE_SERVER="unix:/tmp/pulse.sock" --env=DISPLAY=%DISPLAY% --env=LD_PRELOAD=%LD_PRELOAD% %STEAM% -silent -login %LOGIN% %PASSWORD% -nominidumps -nobreakpad -no-browser -nofriendsui'
 const LAUNCH_OPTIONS_STEAM_RESET = 'firejail --net=none --noprofile --private="%HOME%" %STEAM% --reset'
@@ -18,7 +19,7 @@ const LAUNCH_OPTIONS_GAME_RUNTIME = LAUNCH_OPTIONS_GAME.replace("%REPLACE_RUNTIM
 const TIMEOUT_START_GAME = 10000;
 const TIMEOUT_IPC_STATE = 70000;
 const TIMEOUT_STEAM_RUNNING = 70000;
-const MAX_CONCURRENT_BOTS = 3;
+const MAX_CONURRENT_BOTS = 3;
 const DELAY_START_TIME = 1000;
 
 const STATE = {
@@ -33,17 +34,17 @@ const STATE = {
 }
 
 function makeid(length) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
 }
 
 function clearSourceLockFiles() {
-    const files = fs.readdirSync('/tmp/');
+    var files = fs.readdirSync('/tmp/');
     files.forEach((str, index, arr) => {
         if (str.startsWith("source_engine") && str.endsWith(".lock"))
             fs.unlink(`/tmp/${str}`, (err) => {
@@ -57,13 +58,7 @@ if (!process.env.SUDO_USER) {
     process.exit(1);
 }
 
-const USER = {
-    name: process.env.SUDO_USER,
-    uid: Number.parseInt(child_process.execSync("id -u " + process.env.SUDO_USER).toString().trim()),
-    home: child_process.execSync(`printf ~${process.env.SUDO_USER}`).toString(),
-    interface: child_process.execSync("route -n | grep '^0\.0\.0\.0' | grep -o '[^ ]*$' | head -n 1").toString().trim(),
-    SUPPORTS_FJ_NET: true
-};
+const USER = { name: process.env.SUDO_USER, uid: Number.parseInt(child_process.execSync("id -u " + process.env.SUDO_USER).toString().trim()), home: child_process.execSync(`printf ~${process.env.SUDO_USER}`).toString(), interface: child_process.execSync("route -n | grep '^0\.0\.0\.0' | grep -o '[^ ]*$' | head -n 1").toString().trim(), SUPPORTS_FJ_NET: true };
 try {
     child_process.execSync(`firejail --quiet --noprofile --net=${USER.interface} bash -c "ping -q -c 1 -W 1 1.1.1.1 >/dev/null && echo ok"`)
 } catch (error) {
@@ -74,7 +69,7 @@ try {
 class Bot extends EventEmitter {
     constructor(botid) {
         super();
-        const self = this;
+        var self = this;
         this.state = STATE.INITIALIZING;
 
         this.name = "b" + botid;
@@ -115,11 +110,11 @@ class Bot extends EventEmitter {
         }
 
         this.on('ipc-data', function (obj) {
-            if (self.state !== STATE.RUNNING && self.state !== STATE.WAITING)
+            if (self.state != STATE.RUNNING && self.state != STATE.WAITING)
                 return;
-            const id = obj.id;
-            const data = obj.data;
-            if (data.heatbeat === self.ipcLastHeartbeat)
+            var id = obj.id;
+            var data = obj.data;
+            if (data.heatbeat == self.ipcLastHeartbeat)
                 return;
             self.ipcLastHeartbeat = data.heartbeat;
 
@@ -159,7 +154,7 @@ class Bot extends EventEmitter {
     }
 
     spawnSteam() {
-        const self = this;
+        var self = this;
         if (self.procFirejailSteam) {
             return;
         }
@@ -169,31 +164,29 @@ class Bot extends EventEmitter {
             fs.chownSync(self.home, USER.uid, USER.uid);
         }
 
-        const steambin = this.nativeSteam ? "steam-native" : "steam";
+        var steambin = this.nativeSteam ? "steam-native" : "steam";
 
         self.procFirejailSteam = child_process.spawn(([this.shouldResetSteam, this.shouldResetSteam = 0][0] ? LAUNCH_OPTIONS_STEAM_RESET : LAUNCH_OPTIONS_STEAM)
-                .replace("%LOGIN%", self.account.login)
-                .replace("%PASSWORD%", self.account.password)
-                .replace("%JAILNAME%", self.name)
-                .replace("%LD_PRELOAD%", `"${process.env.STEAM_LD_PRELOAD}"`)
-                .replace("%DISPLAY%", process.env.DISPLAY)
-                .replace("%NETWORK%", USER.SUPPORTS_FJ_NET ? `--net=${USER.interface}` : `--netns=catbotns${this.botid}`)
-                .replace("%HOME%", self.home)
-                .replace("%STEAM%", steambin),
+            .replace("%LOGIN%", self.account.login)
+            .replace("%PASSWORD%", self.account.password)
+            .replace("%JAILNAME%", self.name)
+            .replace("%LD_PRELOAD%", `"${process.env.STEAM_LD_PRELOAD}"`)
+            .replace("%DISPLAY%", process.env.DISPLAY)
+            .replace("%NETWORK%", USER.SUPPORTS_FJ_NET ? `--net=${USER.interface}` : `--netns=catbotns${this.botid}`)
+            .replace("%HOME%", self.home)
+            .replace("%STEAM%", steambin),
             self.spawnOptions);
         self.logSteam = fs.createWriteStream('./network/wpanel-logs/' + self.name + '.steam.log');
-        self.logSteam.on('error', (err) => {
-            self.log(`error on logSteam pipe: ${err}`)
-        });
+        self.logSteam.on('error', (err) => { self.log(`error on logSteam pipe: ${err}`) });
         self.procFirejailSteam.stdout.pipe(self.logSteam);
 
-        let tail_steam_err_logs = [];
-        const steam_path = path.join(this.home, ".steam/steam");
+        var tail_steam_err_logs = [];
+        var steam_path = path.join(this.home, ".steam/steam");
 
         function processErrorLogs(text) {
             if (text.includes("System startup time:")) {
 
-                const steam_apps = path.join(steam_path, "steamapps");
+                var steam_apps = path.join(steam_path, "steamapps");
                 self.steamPath = path.resolve(this.home, path.relative(USER.home, fs.realpathSync(steam_path)));
                 self.steamApps = path.resolve(this.home, path.relative(USER.home, fs.realpathSync(steam_apps)));
                 self.tf2Path = path.join(this.steamApps, "common/Team Fortress 2");
@@ -203,7 +196,7 @@ class Bot extends EventEmitter {
                     self.setupSteamapps();
                 }
 
-                for (let i = 0; i < tail_steam_err_logs.length; i++) {
+                for (var i = 0; i < tail_steam_err_logs.length; i++) {
                     if (tail_steam_err_logs[i]) {
                         tail_steam_err_logs[i].unwatch();
                     }
@@ -219,7 +212,7 @@ class Bot extends EventEmitter {
         function registerDebianListener() {
             try {
                 tail_steam_err_logs.push(new Tail(path.join(this.home, ".steam/debian-installation/error.log")));
-                tail_steam_err_logs[tail_steam_err_logs.length - 1].on('line', (data) => {
+                tail_steam_err_logs[tail_steam_err_logs.length-1].on('line', (data) => {
                     processErrorLogs.bind(this)(data);
                 })
             } catch (error) {
@@ -228,14 +221,14 @@ class Bot extends EventEmitter {
             }
         }
 
-        const isDebian = !fs.existsSync("/usr/bin/steam") && fs.existsSync("/usr/games/steam");
+        var isDebian = !fs.existsSync("/usr/bin/steam") && fs.existsSync("/usr/games/steam");
         self.procFirejailSteam.stderr.on("data", (data) => {
             var text = data.toString();
             processErrorLogs.bind(this)(text);
         });
 
         self.procFirejailSteam.stdout.on("data", (data) => {
-            const text = data.toString();
+            var text = data.toString();
             // Extend time if we are downloading updates.
             if (text.includes(" Downloading update (")) {
                 self.time_steamWorking = Date.now() + TIMEOUT_STEAM_RUNNING;
@@ -252,7 +245,7 @@ class Bot extends EventEmitter {
         self.procFirejailSteam.on('exit', self.handleSteamExit.bind(self));
         if (tail_steam_err_logs.length)
             self.procFirejailSteam.on('exit', () => {
-                for (let i = 0; i < tail_steam_err_logs.length; i++) {
+                for (var i = 0; i < tail_steam_err_logs.length; i++) {
                     if (tail_steam_err_logs[i]) {
                         tail_steam_err_logs[i].unwatch();
                         tail_steam_err_logs[i] = null;
@@ -265,24 +258,22 @@ class Bot extends EventEmitter {
     }
 
     spawnGame() {
-        const self = this;
+        var self = this;
         this.restarts++;
 
-        const filename = `/tmp/.gl${makeid(6)}`;
+        var filename = `/tmp/.gl${makeid(6)}`;
         fs.copyFileSync("/opt/cathook/bin/libcathook-textmode.so", filename);
 
         clearSourceLockFiles();
 
         self.procFirejailGame = child_process.spawn((this.nativeSteam ? LAUNCH_OPTIONS_GAME_NATIVE : LAUNCH_OPTIONS_GAME_RUNTIME).replace("$GAMEPATH", path.relative(self.home, self.tf2Path).replace(/(\s+)/g, '\\$1'))
-                .replace("%JAILNAME%", self.name)
-                .replace("%LD_PRELOAD%", `"${filename}:${process.env.STEAM_LD_PRELOAD}"`)
-                .replace("%DISPLAY%", process.env.DISPLAY)
-                .replace("%STEAM_RUNTIME%", path.relative(self.home, path.join(self.steamPath, "/ubuntu12_32/steam-runtime/run.sh"))),
+            .replace("%JAILNAME%", self.name)
+            .replace("%LD_PRELOAD%", `"${filename}:${process.env.STEAM_LD_PRELOAD}"`)
+            .replace("%DISPLAY%", process.env.DISPLAY)
+            .replace("%STEAM_RUNTIME%", path.relative(self.home, path.join(self.steamPath, "/ubuntu12_32/steam-runtime/run.sh"))),
             [], self.spawnOptions);
         self.logGame = fs.createWriteStream('./network/wpanel-logs/' + self.name + '.game.log');
-        self.logGame.on('error', (err) => {
-            self.log(`error on logGame pipe: ${err}`)
-        });
+        self.logGame.on('error', (err) => { self.log(`error on logGame pipe: ${err}`) });
         self.procFirejailGame.stdout.pipe(self.logGame);
         self.procFirejailGame.stderr.pipe(self.logGame);
         self.procFirejailGame.on('exit', self.handleGameExit.bind(self));
@@ -300,7 +291,6 @@ class Bot extends EventEmitter {
 
         delete this.procFirejailSteam;
     }
-
     handleGameExit(code, signal) {
         this.log(`Game (${this.procFirejailGame.pid}) exited with code ${code}, signal ${signal}`);
         this.ipcState = null;
@@ -323,7 +313,6 @@ class Bot extends EventEmitter {
         if (this.procFirejailSteam)
             this.procFirejailSteam.kill("SIGINT");
     }
-
     killGame() {
         this.log('Killing game');
         if (this.procFirejailGame)
@@ -332,9 +321,9 @@ class Bot extends EventEmitter {
 
     gameCheck() {
         try {
-            const gamepid = Number.parseInt(child_process.execSync(`pgrep -P ${this.procFirejailGame.pid}`).toString().trim());
+            var gamepid = Number.parseInt(child_process.execSync(`pgrep -P ${this.procFirejailGame.pid}`).toString().trim());
 
-            const self = this;
+            var self = this;
             procfs(gamepid).stat(function (err, ret) {
                 if (err) {
                     self.log("Error while getting stat.");
@@ -354,7 +343,7 @@ class Bot extends EventEmitter {
     }
 
     update() {
-        const time = Date.now();
+        var time = Date.now();
         if (this.shouldRun && !this.shouldRestart) {
             if (this.procFirejailSteam) {
                 if (!this.isSteamWorking) {
@@ -362,24 +351,28 @@ class Bot extends EventEmitter {
                         this.shouldRestart = true;
                         this.time_steamWorking = 0;
                     }
-
-                } else {
+                    return;
+                }
+                else {
                     if (!this.procFirejailGame) {
                         this.spawnGame();
                         this.state = STATE.WAITING;
                         this.time_gameCheck = time + TIMEOUT_START_GAME;
-                    } else {
+                    }
+                    else {
                         if (this.time_gameCheck) {
                             if (time > this.time_gameCheck) {
                                 if (!this.gameCheck()) {
                                     this.shouldRestart = true;
                                     this.time_gameCheck = Number.MAX_SAFE_INTEGER;
-                                } else {
+                                }
+                                else {
                                     this.time_gameCheck = 0;
                                     this.time_ipcState = time + TIMEOUT_IPC_STATE;
                                 }
                             }
-                        } else {
+                        }
+                        else {
                             if (this.ipcState) {
                                 this.time_ipcState = 0;
                                 this.state = STATE.RUNNING;
@@ -393,16 +386,18 @@ class Bot extends EventEmitter {
 
                     }
                 }
-            } else {
+            }
+            else {
                 if (this.procFirejailGame) {
                     this.killGame();
-                } else {
+                }
+                else {
                     if (!this.account) {
                         this.state = STATE.NO_ACCOUNT;
                         this.log('Preparing to restart with new account...');
                         this.account = accounts.get(this.botid);
                     }
-                    if (this.account && module.exports.currentlyStartingGames < MAX_CONCURRENT_BOTS && module.exports.lastStartTime + DELAY_START_TIME < time) {
+                    if (this.account && module.exports.currentlyStartingGames < MAX_CONURRENT_BOTS && module.exports.lastStartTime + DELAY_START_TIME < time) {
                         module.exports.lastStartTime = time;
                         module.exports.currentlyStartingGames++;
                         this.state = STATE.STARTING;
@@ -412,7 +407,8 @@ class Bot extends EventEmitter {
                     }
                 }
             }
-        } else {
+        }
+        else {
             if (this.procFirejailGame) {
                 this.killGame();
             }
@@ -435,11 +431,9 @@ class Bot extends EventEmitter {
         else
             this.shouldRun = true;
     }
-
     stop() {
         this.shouldRun = false;
     }
-
     full_stop() {
         this.stop();
 

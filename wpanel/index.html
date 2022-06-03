@@ -1,120 +1,117 @@
-<html lang="en">
-<head>
-    <title>Cathook Control Panel</title>
-    <link href="images/favicon.ico" rel="icon"/>
-    <link href="design/boot.css" rel="stylesheet"/>
-    <link href="design/style.css" rel="stylesheet"/>
+<html>
+    <head>
+        <title>Cathook Control Panel</title>
+        <link rel="icon" href="images/favicon.ico"/>
+        <link rel="stylesheet" href="design/boot.css"/>
+        <link rel="stylesheet" href="design/style.css"/>
 
-    <!-- Navbar Control Center -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <div class="navbar-brand">Cathook Control</div>
-            <button class="navbar-toggler" data-bs-target="#navbarColor02" data-bs-toggle="collapse" type="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarColor02">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item" style="cursor: pointer;">
-                        <a class="nav-link" data-bs-target="#controls" data-bs-toggle="modal" href="#controls">Control
-                            Panel</a>
-                    </li>
-                    <li class="nav-item" style="cursor: pointer;">
-                        <a class="nav-link" href="https://github.com/explowz" target="_blank"><img
-                                alt="GitHub" src="images/github.png" style="width: 1.5rem;"></a>
-                    </li>
-                    <li class="nav-item" style="cursor: pointer;">
-                        <a class="nav-link" href="https://t.me/+ReqkBh3HzU4PSkUU" target="_blank"><img
-                                alt="Telegram" src="images/telegram.png" style="width: 1.5rem;"></a>
-                    </li>
-                </ul>
-            </div>
-            <span>Status <span id="status-text">Pending</span></span>
-        </div>
-    </nav>
-    <!-- Navbar Control Center -->
-
-</head>
-<body>
-
-<!-- Bot Command Center -->
-<div style="margin-top:-2px;">
-    <div id="table-container">
-        <p class="card-text">
-        <table class="table table-hover" id="clients">
-            <thead>
-            <tr id="spanfix">
-                <td style="width: 10.5rem !important;">Commands</td>
-                <td scope="row">Restarts</td>
-                <td scope="row">ID</td>
-                <td scope="row">Name</td>
-                <td scope="row">State</td>
-                <td scope="row">Profile</td>
-                <td scope="row">Uptime</td>
-                <td scope="row">Status</td>
-                <td scope="row">Queue</td>
-                <td scope="row">Total Score</td>
-                <td scope="row">Current Score</td>
-                <td scope="row">Connected</td>
-                <td scope="row">Class</td>
-                <td scope="row">Health</td>
-                <td scope="row">Map</td>
-                <td scope="row">Players</td>
-            </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-        </table>
-        </p>
-    </div>
-</div>
-<!-- Bot Command Center -->
-
-<div class="container" style="margin-top: 2rem;">
-    <!-- Modals -->
-    <div class="modal fade" id="controls" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered" style="border-radius: 0 !important;">
-            <div class="modal-content" style="border-radius: 0 !important;">
-                <div class="modal-header">
-                    <h1>Cathook Control Panel <small class="rainbow"> v1.0.5 </small></h1>
+        <!-- Navbar Control Center -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <div class="navbar-brand">Cathook Control</div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor02">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item" style="cursor: pointer;">
+                            <a class="nav-link" href="#controls" data-bs-toggle="modal" data-bs-target="#controls">Control Panel</a>
+                        </li>
+                        <li class="nav-item" style="cursor: pointer;">
+                            <a class="nav-link" href="https://github.com/explowz" target="_blank"><img src="images/github.png" style="width: 1.5rem;" ></a>
+                        </li>
+                        <li class="nav-item" style="cursor: pointer;">
+                            <a class="nav-link" href="https://t.me/+ReqkBh3HzU4PSkUU" target="_blank"><img src="images/telegram.png" style="width: 1.5rem;"></a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="modal-body">
-                    <div id="console-container">
+                <span>Status <span id="status-text">Pending</span></span>
+            </div>
+        </nav>
+        <!-- Navbar Control Center -->
+
+    </head>
+    <body aria-hidden="List area for bots">
+
+        <!-- Bot Command Center -->
+        <div style="margin-top:-2px;">
+            <div id="table-container">
+                <p class="card-text">
+                    <table id="clients" class="table table-hover">
+                        <thead>
+                            <tr id="spanfix">
+                                <td  style="width: 10.5rem !important;">Commands</td>
+                                <td scope="row">Restarts</td>
+                                <td scope="row">ID</td>
+                                <td scope="row">Name</td>
+                                <td scope="row">State</td>
+                                <td scope="row">Profile</td>
+                                <td scope="row">Uptime</td>
+                                <td scope="row">Status</td>
+                                <td scope="row">Queue</td>
+                                <td scope="row">Total Score</td>
+                                <td scope="row">Current Score</td>
+                                <td scope="row">Connected</td>
+                                <td scope="row">Class</td>
+                                <td scope="row">Health</td>
+                                <td scope="row">Map</td>
+                                <td scope="row">Players</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </p>
+            </div>
+        </div>
+        <!-- Bot Command Center -->
+
+        <div class="container" style="margin-top: 2rem;">
+            <!-- Modals -->
+            <div class="modal fade" id="controls" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered" style="border-radius: 0 !important;">
+                <div class="modal-content" style="border-radius: 0 !important;">
+                    <div class="modal-header">
+                        <h1>Cathook Control Panel <small class="rainbow"> v1.0.5 </small></h1>
+                    </div>
+                    <div class="modal-body">
+                        <div id="console-container">
                             <span>
-                                <label for="console">Send a command to every bot</label>
-                                <input id="console" placeholder="Send a command to every client" size=45 type="text">
+                                Send a command to every bot
+                                <input type="text" id="console" placeholder="Send a command to every client" size=45>
                             </span>
-                        <input id="console-send" style="width: 4rem;" type="button" value="Submit">
-                        <br><br>
-                        <label for="bot-quota">Set the bot quota</label><br>
-                        <input id="bot-quota" placeholder="Bot quota" size=45>
-                        <input id="bot-quota-apply" style="width: 4rem;" type="button" value="Apply">
-                        <br><br>
-                        <label for="api-password">Web Panel Password:</label>
-                        <input id="api-password" placeholder="Panel Password" size="45" type="text">
-                        <input id="api-login-button" style="width: 4rem;" type="button" value="Login">
+                            <input type="button" id="console-send" style="width: 4rem;" value="Submit">
+                            <br><br>
+                            Set the bot quota<br>
+                            <input id="bot-quota" placeholder="Bot quota" size=45> 
+                            <input id="bot-quota-apply" type="button" style="width: 4rem;" value="Apply">
+                            <br><br>
+                            Web Panel Password:
+                            <input id="api-password" type="text" size="45" placeholder="Panel Password">
+                            <input id="api-login-button" type="button" style="width: 4rem;" value="Login">
+                        </div>
+                        <br>
+                        <div>
+                            <ol style="padding-left: 1rem;">
+                                <li>Restart - Restart all bots</li>
+                                <li>Terminate - Terminate all bots</li>
+                                <li>Refresh - Refresh all bots</li>
+                            </ol>
+                            <input type="button" style="width: 7rem;" id="bot-restartall" value="Restart"> 
+                            <input type="button" style="width: 7rem;" id="bot-terminateall" value="Terminate"> 
+                            <input type="button" style="width: 7rem;" id="bot-refresh" value="Refresh"> 
+                        </div>
+                        <br>
                     </div>
-                    <br>
-                    <div>
-                        <ol style="padding-left: 1rem;">
-                            <li>Restart - Restart all bots</li>
-                            <li>Terminate - Terminate all bots</li>
-                            <li>Refresh - Refresh all bots</li>
-                        </ol>
-                        <input id="bot-restartall" style="width: 7rem;" type="button" value="Restart">
-                        <input id="bot-terminateall" style="width: 7rem;" type="button" value="Terminate">
-                        <input id="bot-refresh" style="width: 7rem;" type="button" value="Refresh">
-                    </div>
-                    <br>
+                </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-</body>
-
-<!-- Scripts Required For Website -->
-<script src="scripts/browser.js"></script>
-<script defer src="design/boot/boot.js"></script>
+    </body>
+    
+    <!-- Scripts Required For Website -->
+    <script src="scripts/browser.js"></script>
+    <script defer src="design/boot/boot.js"></script>
 
 </html>

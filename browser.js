@@ -163,15 +163,9 @@ function updateIPCData(row, id, data) {
         }
     }
 
-    row.find('.client-pid').text(data.pid);
     row.find('.client-id').text(id);
     row.find('.client-name').text(data.name);
     row.find('.client-total').text(data.accumulated.score);
-    const hitrate = Math.floor((data.accumulated.shots ? data.accumulated.hits / data.accumulated.shots : 0) * 100);
-    const hsrate = Math.floor((data.accumulated.hits ? data.accumulated.headshots / data.accumulated.hits : 0) * 100);
-    row.find('.client-shots').text(data.accumulated.shots);
-    row.find('.client-hitrate').text(hitrate + '%');
-    row.find('.client-hsrate').text(hsrate + '%');
     row.find('.client-uptime-total').text(format(Date.now() - data.ts_injected * 1000));
 
     if (data.connected) {
@@ -182,13 +176,11 @@ function updateIPCData(row, id, data) {
         }
         row.find('.client-ip').text(data.ingame.server);
         row.find('.client-alive').text(data.ingame.life_state ? 'Dead' : 'Alive');
-        row.find('.client-team').text(teams[data.ingame.team]);
         row.find('.client-class').text(classes[data.ingame.role]);
         row.find('.client-score').text(data.ingame.score);
         row.find('.client-health').text(data.ingame.health + '/' + data.ingame.health_max);
         row.find('.client-map').text(data.ingame.mapname);
         row.find('.client-players').text(data.ingame.player_count);
-        row.find('.client-bots').text(data.ingame.bot_count);
     } else {
         if (data.ts_disconnected) {
             row.find('.client-uptime-queue').text(format(Date.now() - data.ts_disconnected * 1000));

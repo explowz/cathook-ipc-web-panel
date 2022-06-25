@@ -164,7 +164,6 @@ function updateIPCData(row, id, data) {
     }
 
     row.find('.client-id').text(id);
-    row.find('.client-name').text(data.name);
     row.find('.client-total').text(data.accumulated.score);
     row.find('.client-uptime-total').text(format(Date.now() - data.ts_injected * 1000));
 
@@ -218,7 +217,6 @@ function addClientRow(botid) {
     row.append(actions);
     row.append($('<td></td>').attr('class', 'client-restarts').text('None'));
     row.append($('<td></td>').attr('class', 'client-id active').text('None'));
-    row.append($('<td></td>').attr('class', 'client-name active').text('None'));
     row.append($('<td></td>').attr('class', 'client-state').text('Detecting'));
     row.append($('<td></td>').attr('class', 'client-steam').text('None'));
     row.append($('<td></td>').attr('class', 'client-uptime-total active').text('N/A'));

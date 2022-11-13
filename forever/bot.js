@@ -173,6 +173,8 @@ class Bot extends EventEmitter {
         }
 
         var steambin = this.nativeSteam ? "steam-native" : "steam";
+        var steam_path = path.join(this.home, ".steam/steam");
+        self.steamPath = path.resolve(this.home, path.relative(USER.home, fs.realpathSync(steam_path)));
 
         self.procFirejailSteam = child_process.spawn(([this.shouldResetSteam, this.shouldResetSteam = 0][0] ? LAUNCH_OPTIONS_STEAM_RESET : LAUNCH_OPTIONS_STEAM)
             // Username
@@ -180,7 +182,7 @@ class Bot extends EventEmitter {
             // Password
             .replace("%PASSWORD%", self.account.password)
             // Path of the steam web helper script. Used to reduce ram usage
-            .replace("%STEAMWEBHELPERPATH%", `${self.steamPath}/ubuntu12_64/steamwebhelper.sh`)
+            .replace("%STEAMWEBHELPERPATH%", path.relative(self.home, path.join(self.steamPath, "/ubuntu12_64/steamwebhelper.sh")))
             // Name of the firejail jail
             .replace("%JAILNAME%", self.name)
             // LD_PRELOAD, "just disable vac"
@@ -199,13 +201,11 @@ class Bot extends EventEmitter {
         self.procFirejailSteam.stdout.pipe(self.logSteam);
 
         var tail_steam_err_logs = [];
-        var steam_path = path.join(this.home, ".steam/steam");
 
         function processErrorLogs(text) {
             if (text.includes("System startup time:")) {
                 // Dynamically determine the correct paths, this supports debian, etc.
                 var steam_apps = path.join(steam_path, "steamapps");
-                self.steamPath = path.resolve(this.home, path.relative(USER.home, fs.realpathSync(steam_path)));
                 self.steamApps = path.resolve(this.home, path.relative(USER.home, fs.realpathSync(steam_apps)));
                 self.tf2Path = path.join(this.steamApps, "common/Team Fortress 2");
 
